@@ -108,7 +108,7 @@ function getContextForSubtree(
 
 function scheduleRootUpdate(
   current: Fiber,
-  element: ReactNodeList,
+  element: ReactNodeList, // <App>
   expirationTime: ExpirationTime,
   callback: ?Function,
 ) {
@@ -152,14 +152,14 @@ function scheduleRootUpdate(
 }
 
 export function updateContainerAtExpirationTime(
-  element: ReactNodeList,
-  container: OpaqueRoot,
+  element: ReactNodeList, // <App></App>
+  container: OpaqueRoot, // FiberRoot
   parentComponent: ?React$Component<any, any>,
   expirationTime: ExpirationTime,
   callback: ?Function,
 ) {
   // TODO: If this is a nested container, this won't be the root.
-  const current = container.current;
+  const current = container.current; // FiberRoot的Fiber
 
   if (__DEV__) {
     if (ReactFiberInstrumentation.debugTool) {
@@ -173,6 +173,7 @@ export function updateContainerAtExpirationTime(
     }
   }
 
+  // 给container分配context
   const context = getContextForSubtree(parentComponent);
   if (container.context === null) {
     container.context = context;
@@ -273,9 +274,9 @@ export function createContainer(
 }
 
 export function updateContainer(
-  element: ReactNodeList,
-  container: OpaqueRoot,
-  parentComponent: ?React$Component<any, any>,
+  element: ReactNodeList,  // <App></App>
+  container: OpaqueRoot, // FiberRoot
+  parentComponent: ?React$Component<any, any>, null
   callback: ?Function,
 ): ExpirationTime {
   const current = container.current;

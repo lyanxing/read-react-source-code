@@ -340,10 +340,11 @@ function ReactRoot(
   this._internalRoot = root;
 }
 ReactRoot.prototype.render = function(
-  children: ReactNodeList,
+  children: ReactNodeList, // <App></App>
   callback: ?() => mixed,
 ): Work {
-  const root = this._internalRoot;
+  const root = this._internalRoot; // RootFiber
+  // RactWork和promise类似，.push加入方法，._onCommit调用所有加入的方法
   const work = new ReactWork();
   callback = callback === undefined ? null : callback;
   if (__DEV__) {
@@ -467,7 +468,7 @@ function legacyCreateRootFromDOMContainer(
 ): Root {
   const shouldHydrate =
     forceHydrate || shouldHydrateDueToLegacyHeuristic(container);
-  // First clear any existing content.
+  // 如果不是hydrate模式则删除container的子节点
   if (!shouldHydrate) {
     let warned = false;
     let rootSibling;
@@ -501,14 +502,15 @@ function legacyCreateRootFromDOMContainer(
       );
     }
   }
-  // Legacy roots are not async by default.
+  // root 不能是异步组件
   const isConcurrent = false;
   return new ReactRoot(container, isConcurrent, shouldHydrate);
 }
 
+// 真正的render入口
 function legacyRenderSubtreeIntoContainer(
   parentComponent: ?React$Component<any, any>,
-  children: ReactNodeList,
+  children: ReactNodeList, // <App></App>
   container: DOMContainer,
   forceHydrate: boolean,
   callback: ?Function,
@@ -528,6 +530,7 @@ function legacyRenderSubtreeIntoContainer(
   let root: Root = (container._reactRootContainer: any);
   if (!root) {
     // Initial mount
+    // 返回 ReactRoot的实例 ReactRoot包含_internalRoot属性以及render等方法，_internalRoot是一个FiberRoot对象
     root = container._reactRootContainer = legacyCreateRootFromDOMContainer(
       container,
       forceHydrate,
