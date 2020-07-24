@@ -1,27 +1,9 @@
-import React, { Component } from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import React, { Component } from 'react';
+import Differ from './Diff'
+import LifeCycle from "./LifeCycle"
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      num: 0,
-    };
-  }
-
-  handleClick = () => {
-    this.setState({ num: this.state.num + 1 });
-  };
-
-  render() {
-    const { num } = this.state;
-    return (
-      <div className="App" onClick={this.handleClick}>
-        {num}
-      </div>
-    );
-  }
+export default function  App(props) {
+  return (
+    <LifeCycle />
+  )
 }
-
-export default App;
